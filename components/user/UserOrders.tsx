@@ -41,7 +41,7 @@ const UserOrders = async () => {
                   {Object.entries(
                     order.dynamicProperties as Record<string, string>
                   ).map(([propertyName, propertyValue]) => (
-                    <span>
+                    <span key={propertyName}>
                       {propertyName}={propertyValue}
                     </span>
                   ))}

@@ -55,7 +55,7 @@ const CategoryProperties = ({ properties }: props) => {
                 <SelectGroup>
                   <SelectLabel>Properties</SelectLabel>
                   {data.value.map((id: any, index: number) => (
-                    <SelectItem value={id}>{id}</SelectItem>
+                    <SelectItem key={id} value={id}>{id}</SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>

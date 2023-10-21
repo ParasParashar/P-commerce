@@ -14,7 +14,7 @@ const UserFavoriteProducts = async () => {
     return (
       <div className="flex items-center justify-center w-full h-48">
         <p className="text-sm md:text-lg text-center text-gray-500">
-         You don't have any favorite products!
+         You don&#39;t have any favorite products!
         </p>
       </div>
     );
