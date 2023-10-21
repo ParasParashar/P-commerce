@@ -2,13 +2,17 @@ import { getAllProducts, getFeaturedProducts } from "@/actions/products.action";
 import ImageSlider from "@/components/Card/ImageSlider";
 import ProductCard from "@/components/Card/ProductCard";
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs";
-import { createUser } from "@/actions/user.action";
+import { currentUser } from "@clerk/nextjs";
+import { updateUser } from "@/actions/user.action";
 
 export default async function Home() {
-  const { userId } = auth();
-  if (!userId) redirect("/sign-in");
-  await createUser();
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+  await updateUser({
+    name: user.firstName || "User",
+    email: user.emailAddresses[0].emailAddress,
+  });
+  
   const products = await getAllProducts();
   const featuredProducts = await getFeaturedProducts();
   return (
@@ -32,7 +36,7 @@ export default async function Home() {
         ) : (
           products?.map((data) => (
             <div key={data.id} className="w-full md:w-60 h-60  ">
-              <ProductCard currentUserId={userId} product={data} />
+              <ProductCard currentUserId={user.id} product={data} />
             </div>
           ))
         )}

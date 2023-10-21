@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         if (!userId) {
             return new NextResponse("User not found", { status: 404 })
         }
-        let user;
+        // let user;
         // finding the user
         const existingUser = await db.clientUser.findFirst({
             where: {
@@ -19,28 +19,29 @@ export async function POST(req: Request) {
                 cart: true
             }
         });
-        if (!existingUser) {
-            // if not user creating it
-            const newUser = await db.clientUser.create({
-                data: {
-                    authUserId: userId,
-                    cart: {
-                        create: {},
-                    }
-                },
-                include: {
-                    cart: true
-                }
-            });
-            user = newUser;
-        } else {
-            user = existingUser;
+        if(!existingUser) {
+            return new NextResponse('user not found')
         }
-
+        const updatedUser = await db.clientUser.update({
+            where:{
+                id:existingUser.id,
+                authUserId:userId
+            },
+            data:{
+                cart:{
+                    create:{}
+                }
+            },include:{
+                cart:true
+            }
+        });
         // finding the cart of the user
+        if(!updatedUser){
+            return new NextResponse('User not found');
+        }
         const userCart = await db.cart.findFirst({
             where: {
-                userId: user.id
+                userId: updatedUser.id
             },
             include: {
                 CartItem: true
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
                 }
             })
         }
-        return new NextResponse('lsj')
+        return NextResponse.json('Work')
     } catch (error: any) {
         console.log(error.message)
         return new NextResponse("Add to cart error", { status: 500 })

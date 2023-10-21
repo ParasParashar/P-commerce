@@ -4,9 +4,9 @@ import { auth } from "@clerk/nextjs";
 
 interface props {
     name: string;
-    address: string;
+    address?: string;
     email: string;
-    pincode: string
+    pincode?: string
 }
 
 
@@ -35,7 +35,7 @@ export async function updateUser({ name, address, email, pincode }: props): Prom
                 },
             });
         } else {
-            await db.clientUser.create({
+          await db.clientUser.create({
                 data: {
                     name: name,
                     address: address,
@@ -51,29 +51,6 @@ export async function updateUser({ name, address, email, pincode }: props): Prom
 
 }
 
-export async function createUser() {
-    try {
-        const { userId } = auth();
-
-        if (!userId) {
-            throw new Error('User Not found')
-        }
-        const user = await db.clientUser.findFirst({
-            where: {
-                authUserId: userId
-            }
-        })
-        if(!user){
-            await db.clientUser.create({
-                data:{
-                    authUserId:userId
-                }
-            })
-        }
-    } catch (error: any) {
-        throw new Error(error);
-    };
-}
 export async function fetchUser() {
     try {
         const { userId } = auth();
@@ -164,7 +141,7 @@ export async function getUserOrders() {
             where:{
                 order:{
                     clientUserId:user.id
-                }
+                } 
             },
             include:{
                 product:true,
