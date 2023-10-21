@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                String              @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String?
+  price             Float?
+  image             String[]
+  userId            String
+  isPublised        Boolean?
+  category          Category?           @relation(fields: [categoryId], references: [id])
+  categoryId        String?             @db.ObjectId
+  dynamicProperties Json?
+  properties        ProductProperties[]
+  featuredProducts  FeaturedProducts[]
+  sellerId          String              @db.ObjectId
+  seller            Sellers             @relation(fields: [sellerId], references: [id])
+  cartItem          CartItem[]
+  favorites         FavoriteProduct[]
+  reviews           ProductReviews[]
+  OrderItem         OrderItem[]
+}
+
+model Category {
+  id            String              @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  parentId      String?             @map("parentId") @db.ObjectId
+  parent        Category?           @relation("SubCategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subcategories Category[]          @relation("SubCategories")
+  product       Product[]
+  properties    ProductProperties[]
+}
+
+model ProductProperties {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  value      String[]
+  categoryId String?   @db.ObjectId
+  category   Category? @relation(fields: [categoryId], references: [id])
+  productId  String?   @db.ObjectId
+  products   Product?  @relation(fields: [productId], references: [id])
+}
+
+model FeaturedProducts {
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  specialDescription String
+  spcialDiscount     String?
+  productId          String  @unique @db.ObjectId
+  product            Product @relation(fields: [productId], references: [id])
+}
+
+model Sellers {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  sellerName  String
+  companyName String
+  email       String
+  userId      String
+  products    Product[]
+}
+
+// client schemas
+
+model ClientUser {
+  id         String            @id @default(auto()) @map("_id") @db.ObjectId
+  authUserId String
+  name       String?
+  email      String?
+  address    String?
+  pincode    String?
+  cart       Cart[]
+  favorites  FavoriteProduct[]
+  reviews    ProductReviews[]
+  orders     Orders[]
+}
+
+model Cart {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String     @db.ObjectId
+  clientUser ClientUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  CartItem   CartItem[]
+}
+
+model CartItem {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  cartId            String  @db.ObjectId
+  cart              Cart    @relation(fields: [cartId], references: [id])
+  quantity          Int
+  dynamicProperties Json?
+  productId         String  @db.ObjectId
+  product           Product @relation(fields: [productId], references: [id])
+}
+
+model FavoriteProduct {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  productId String     @unique @db.ObjectId
+  product   Product    @relation(fields: [productId], references: [id])
+  userId    String     @db.ObjectId
+  user      ClientUser @relation(fields: [userId], references: [id])
+}
+
+model ProductReviews {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  review    String
+  ratings   Float
+  productId String     @db.ObjectId
+  product   Product    @relation(fields: [productId], references: [id])
+  userId    String     @db.ObjectId
+  user      ClientUser @relation(fields: [userId], references: [id])
+  createdBy DateTime
+}
+
+model Orders {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  orderItem OrderItem[]
+  clientUserId String     @db.ObjectId
+  clientUser   ClientUser @relation(fields: [clientUserId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model OrderItem {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  quantity          Int
+  dynamicProperties Json?
+  productId         String   @db.ObjectId
+  product           Product  @relation(fields: [productId], references: [id])
+  orderId  String?    @db.ObjectId
+  order    Orders? @relation(fields: [orderId], references: [id])
+  
+}

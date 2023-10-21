@@ -2,26 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply custom-scrollbar bg-[#131313] text-white;
+}
+.themes {
+  /* for navbar and sidebar */
+  /* @apply bg-gray-200 text-black */
+  @apply bg-black;
+}
+.themes2 {
+  /* for search */
+  @apply bg-[#131313];
+}
+.tab {
+  @apply flex min-h-[50px]  flex-1 items-center gap-1 md:gap-3 themes2 text-gray-400
+     data-[state=active]:border-b-[#707274] data-[state=active]:text-white data-[state=active]:bg-black rounded-lg  transition-all duration-300  !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #353434;
+  border-radius: 50px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3e3e73;
 }
