@@ -60,7 +60,7 @@ const UserOrders = async () => {
                      {new Date(order.order?.createdAt as Date).toDateString()}
                     </span>
             </p>
-            <Link href={`/product/${order.productId}/#review`} className="text-sky-500 transition-all hover:text-blue-700">Create a Review of Product</Link>
+            <Link href={`/product/${order.productId}/#review`} className="text-sky-500 transition-all text-sm hover:text-blue-700">Create a Review </Link>
           </div>
         </div>
       ))}
