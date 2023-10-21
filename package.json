@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "generate prisma"
-  },
+    "postinstall": "prisma generate"
+    },
   "dependencies": {
     "@clerk/nextjs": "^4.25.3",
     "@headlessui/react": "^1.7.17",
