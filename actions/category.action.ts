@@ -181,7 +181,11 @@ export async function getSearchCategoryProperties(categoryName: string, productN
           include: {
             subcategories: true,
             properties: true,
-            product: true,
+            product: {
+              where:{
+                isPublised:true
+              }
+            },
             parent: {
               include: {
                 properties: true
