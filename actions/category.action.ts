@@ -164,6 +164,11 @@ export async function getSearchCategoryProperties(categoryName: string, productN
               include: {
                 properties: true
               }
+            },
+            product:{
+              where:{
+                isPublised:true,
+              }
             }
           },
         });
