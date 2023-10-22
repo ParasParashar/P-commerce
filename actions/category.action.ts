@@ -33,6 +33,7 @@ export async function getSearchProduct({ search, category, propertySearch }: sea
       if (findProductCategory.length > 0) {
         const product = await db.product.findMany({
           where: {
+            isPublised:true,
             category: {
               name: {
                 contains: search,
@@ -51,6 +52,7 @@ export async function getSearchProduct({ search, category, propertySearch }: sea
     if(propertySearch ){
       const product = await db.product.findMany({
         where: {
+          isPublised:true,
           category: {
             name: {
               contains: category,
@@ -84,6 +86,7 @@ export async function getSearchProduct({ search, category, propertySearch }: sea
    
     const searchProduct = await db.product.findMany({
       where: {
+        isPublised:true,
         name: {
           contains: search,
           mode: 'insensitive'
