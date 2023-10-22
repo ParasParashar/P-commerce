@@ -235,6 +235,13 @@ export async function checkCategory(search: string) {
           contains: search,
           mode: 'insensitive'
         },
+      },
+      include:{
+        product:{
+          where:{
+            isPublised:true
+          }
+        }
       }
     })
     return findProductCategory;
