@@ -35,7 +35,7 @@ export default async function Home() {
           <p className="text-xl text-red-500">No products available.</p>
         ) : (
           products?.map((data) => (
-            <div key={data.id} className="w-full md:w-60 h-60  ">
+            <div key={data.id} className="w-full md:w-60 h-72  ">
               <ProductCard currentUserId={user.id} product={data} />
             </div>
           ))

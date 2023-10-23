@@ -22,7 +22,7 @@ const RelatedProducts = async ({ productCategoryId, productId }: props) => {
         </h5>
       <div className="flex overflow-x-auto  gap-x-1 mt-1  ">
         {relatedProducts.map((product) => (
-          <div key={product.id} className="w-60 h-60">
+          <div key={product.id} className="w-60">
             <ProductCard currentUserId={userId} product={product} />
           </div>
         ))}
