@@ -12,7 +12,7 @@ export default async function Home() {
     name: user.firstName || "User",
     email: user.emailAddresses[0].emailAddress,
   });
-  
+
   const products = await getAllProducts();
   const featuredProducts = await getFeaturedProducts();
   return (

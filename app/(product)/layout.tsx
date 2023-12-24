@@ -12,7 +12,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       <main className="md:pt-[20px] pt-[70px] px-5 min-h-screen md:px-10 w-full">
         {children}
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -29,12 +29,14 @@ export async function decreaseCartItem({ cartItemId, productId }: props) {
             }
         })
         if (!user) throw new Error('User not found');
-        const userCartId = user.cart.map((id) => id.id).toString();
+        const existingCartItem = user.cart[0].CartItem.find(item => item.productId === productId);
 
+        if (!existingCartItem) {
+            throw new Error('Cart item not found');
+        }
 
-        const exisitingQuantity = user?.cart[0].CartItem.find(item => item.productId === productId);
-        if (!exisitingQuantity) return null;
-        const updatedQuantity = exisitingQuantity.quantity - 1;
+        const updatedQuantity = existingCartItem.quantity - 1;
+
 
         if (updatedQuantity < 1) {
             await db.cartItem.delete({
@@ -46,9 +48,7 @@ export async function decreaseCartItem({ cartItemId, productId }: props) {
         } else {
             await db.cartItem.update({
                 where: {
-                    id: cartItemId,
-                    productId: productId,
-                    cartId: userCartId
+                    id: existingCartItem.id
                 },
                 data: {
                     quantity: updatedQuantity
@@ -81,24 +81,24 @@ export async function increaseCartItem({ cartItemId, productId }: props) {
             }
         })
         if (!user) throw new Error('User not found');
-        const userCartId = user.cart.map((id) => id.id).toString();
 
+        const existingCartItem = user.cart[0].CartItem.find(item => item.productId === productId);
 
-        const exisitingQuantity = user?.cart[0].CartItem.find(item => item.productId === productId);
-        if (!exisitingQuantity) return null;
-        const updatedQuantity = exisitingQuantity.quantity + 1;
+        if (!existingCartItem) {
+            throw new Error('Cart item not found');
+        }
 
-            await db.cartItem.update({
-                where: {
-                    id: cartItemId,
-                    productId: productId,
-                    cartId: userCartId
-                },
-                data: {
-                    quantity: updatedQuantity
-                }
-            })
-        
+        const updatedQuantity = existingCartItem.quantity + 1;
+
+        await db.cartItem.update({
+            where: {
+                id: existingCartItem.id
+            },
+            data: {
+                quantity: updatedQuantity
+            }
+        })
+
 
     } catch (error: any) {
         console.log('Something went wrong', error.message);

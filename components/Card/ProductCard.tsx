@@ -4,6 +4,7 @@ import Link from "next/link";
 import HeartButton from "../ActionButton/HeartButton";
 import { Product } from "@prisma/client";
 import Image from "next/image";
+import { Skeleton } from "../ui/skeleton";
 type props = {
   product: Product;
   currentUserId: string;
@@ -40,14 +41,17 @@ const ProductCard = ({ product, currentUserId }: props) => {
         </Link>
       </div>
       <div className="flex items-center justify-between absolute bottom-0  left-2 right-2">
-      <p className="text-md  rounded-full text-fuchsia-100 px-2 bg-blue-500">
-              ${product.price}
-            </p>
+        <p className="text-md  rounded-full text-fuchsia-100 px-2 bg-blue-500">
+          ${product.price}
+        </p>
         <HeartButton currentUserId={currentUserId} productId={product.id} />
-
       </div>
     </div>
   );
 };
 
 export default ProductCard;
+
+ProductCard.Skeleton = function TitleSkeleton() {
+  return <Skeleton className="h-72 w-full rounded-lg bg-[#1a1a1a] " />;
+};

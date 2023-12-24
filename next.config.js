@@ -4,14 +4,18 @@ const nextConfig = {
         ignoreBuildErrors: true,
       },
     images:{
-        domains:[
-            'res.cloudinary.com',
-            'img.clerk.com'
+        remotePatterns:[
+            {
+                protocol:'https',
+                hostname:'img.clerk.com'
+            },
+            {
+                protocol:'https',
+                hostname: 'res.cloudinary.com',
+
+            }
         ]
-    },
-    experimental:{
-        serverActions:true,
-        serverComponentsExternalPackages: ["prisma"],
+
     }
 }
 

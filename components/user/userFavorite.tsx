@@ -9,12 +9,11 @@ const UserFavoriteProducts = async () => {
   const { userId } = auth();
   if (!userId) redirect("sign-in");
   const favorites = await userFavoriteProducts();
-  const products = favorites?.map((data) => data.product);
-  if (!favorites || favorites?.length === 0 || products?.length===0) {
+  if (!favorites || favorites?.length === 0) {
     return (
       <div className="flex items-center justify-center w-full h-48">
         <p className="text-sm md:text-lg text-center text-gray-500">
-         You don&#39;t have any favorite products!
+          You don&#39;t have any favorite products!
         </p>
       </div>
     );
@@ -22,7 +21,7 @@ const UserFavoriteProducts = async () => {
 
   return (
     <div className="px-1 md:px-5 flex flex-col gap-3">
-      {products?.map((favorite: any) => (
+      {favorites?.map((favorite: any) => (
         <div
           key={favorite.id}
           className="flex justify-between items-center  gap-1 border-b-[2px] border-[#151313] p-1 md:p-2 bg-[#1b1a1aea] rounded-lg w-full"
@@ -48,9 +47,9 @@ const UserFavoriteProducts = async () => {
               </div>
             </div>
           </Link>
-            <div className="ml-auto flex items-end">
-              <HeartButton currentUserId={userId} productId={favorite.id} />
-            </div>
+          <div className="ml-auto flex items-end">
+            <HeartButton currentUserId={userId} productId={favorite.id} />
+          </div>
         </div>
       ))}
     </div>

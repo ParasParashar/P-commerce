@@ -35,7 +35,7 @@ export async function updateUser({ name, address, email, pincode }: props): Prom
                 },
             });
         } else {
-          await db.clientUser.create({
+            await db.clientUser.create({
                 data: {
                     name: name,
                     address: address,
@@ -76,20 +76,20 @@ export async function getUserReview() {
         if (!user) throw new Error('User Not Found');
         const reviews = await db.productReviews.findMany({
             where: {
-                userId:user.id
+                userId: user.id
             },
-            include:{
-                product:{
-                    select:{
-                        name:true,
-                        id:true,
-                        image:true,
-                        description:true
+            include: {
+                product: {
+                    select: {
+                        name: true,
+                        id: true,
+                        image: true,
+                        description: true
                     }
                 }
             },
-            orderBy:{
-                createdBy:'desc'
+            orderBy: {
+                createdBy: 'desc'
             }
         });
         return reviews;
@@ -98,14 +98,14 @@ export async function getUserReview() {
     }
 
 }
-export async function deleteReview(reviewid:string) {
+export async function deleteReview(reviewid: string) {
     try {
         const user = await fetchUser();
         if (!user) throw new Error('User Not Found');
-       await db.productReviews.delete({
+        await db.productReviews.delete({
             where: {
-                id:reviewid,
-                userId:user.id
+                id: reviewid,
+                userId: user.id
             },
         });
     } catch (error) {
@@ -113,50 +113,51 @@ export async function deleteReview(reviewid:string) {
     }
 
 }
- 
+
 export async function userFavoriteProducts() {
     try {
         const user = await fetchUser();
-        if(!user) throw new Error("User Not Found");
-        const favorite = await db.favoriteProduct.findMany({
-            where:{
-                userId:user.id
+        if (!user) throw new Error("User Not Found");
+        const favorite = await db.product.findMany({
+            where: {
+                id: {
+                    in: user.favoriteProductIds
+                }
             },
-            include:{
-                product:true
-            }
         })
         return favorite;
-        
+
     } catch (error) {
         console.log('Something went wrong user favorite');
     }
-    
+
 }
+
+
 export async function getUserOrders() {
     try {
         const user = await fetchUser();
-        if(!user) throw new Error("User Not Found");
+        if (!user) throw new Error("User Not Found");
         const orders = await db.orderItem.findMany({
-            where:{
-                order:{
-                    clientUserId:user.id
-                } 
+            where: {
+                order: {
+                    clientUserId: user.id
+                }
             },
-            include:{
-                product:true,
-                order:{
-                    include:{
-                        clientUser:true
+            include: {
+                product: true,
+                order: {
+                    include: {
+                        clientUser: true
                     }
                 }
             }
         })
         return orders;
-        
+
     } catch (error) {
         console.log('Something went wrong user favorite');
     }
-    
+
 }
 

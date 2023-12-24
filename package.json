@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
-    },
+  },
   "dependencies": {
     "@clerk/nextjs": "^4.25.3",
     "@headlessui/react": "^1.7.17",
@@ -24,7 +24,7 @@
     "clsx": "^2.0.0",
     "headlessui": "^0.0.0",
     "lucide-react": "^0.284.0",
-    "next": "13.5.4",
+    "next": "^14.0.4",
     "prisma": "^5.4.1",
     "query-string": "^8.1.0",
     "react": "^18",

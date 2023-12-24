@@ -68,16 +68,17 @@ model Sellers {
 // client schemas
 
 model ClientUser {
-  id         String            @id @default(auto()) @map("_id") @db.ObjectId
-  authUserId String
-  name       String?
-  email      String?
-  address    String?
-  pincode    String?
-  cart       Cart[]
-  favorites  FavoriteProduct[]
-  reviews    ProductReviews[]
-  orders     Orders[]
+  id                 String            @id @default(auto()) @map("_id") @db.ObjectId
+  authUserId         String
+  name               String?
+  email              String?
+  address            String?
+  pincode            String?
+  cart               Cart[]
+  favorites          FavoriteProduct[]
+  reviews            ProductReviews[]
+  orders             Orders[]
+  favoriteProductIds String[]          @db.ObjectId
 }
 
 model Cart {
@@ -103,6 +104,8 @@ model FavoriteProduct {
   product   Product    @relation(fields: [productId], references: [id])
   userId    String     @db.ObjectId
   user      ClientUser @relation(fields: [userId], references: [id])
+
+  @@unique([userId, productId])
 }
 
 model ProductReviews {
@@ -117,21 +120,20 @@ model ProductReviews {
 }
 
 model Orders {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  orderItem OrderItem[]
-  clientUserId String     @db.ObjectId
-  clientUser   ClientUser @relation(fields: [clientUserId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderItem    OrderItem[]
+  clientUserId String      @db.ObjectId
+  clientUser   ClientUser  @relation(fields: [clientUserId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model OrderItem {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
   quantity          Int
   dynamicProperties Json?
-  productId         String   @db.ObjectId
-  product           Product  @relation(fields: [productId], references: [id])
-  orderId  String?    @db.ObjectId
-  order    Orders? @relation(fields: [orderId], references: [id])
-  
+  productId         String  @db.ObjectId
+  product           Product @relation(fields: [productId], references: [id])
+  orderId           String? @db.ObjectId
+  order             Orders? @relation(fields: [orderId], references: [id])
 }

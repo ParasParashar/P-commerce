@@ -3,12 +3,12 @@ import { Product, ProductProperties } from "@prisma/client";
 import { Button } from "../ui/button";
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import CartSheet from "../Models/CartSheet";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import axios from "axios";
-import useCartHook from "../hooks/cartHook";
+import useCartHook from "../hooks/useCartHook";
+import DotsLoader from "../Providers/DotsLoader";
 
 type Props = {
   product: Product & {
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const ProductVariant = ({ product }: Props) => {
-  const cartReload= useCartHook();
+  const cartReload = useCartHook();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isloading, setIsloading] = useState(false);
@@ -27,8 +27,13 @@ const ProductVariant = ({ product }: Props) => {
     );
   };
 
-  const handleVariantSelection = (property: string, value: string, e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); 
+  const handleVariantSelection = (
+    property: string,
+    value: string,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set(property, value);
     router.push(`?${currentParams.toString()}`);
@@ -48,7 +53,7 @@ const ProductVariant = ({ product }: Props) => {
         dynamicProperties: dynamicProperties,
       };
       await axios.post("/api/addToCart", data);
-      cartReload.onToggle();
+      cartReload.onOpen();
       toast.success("Item Added to Cart 🛒");
     } catch (error) {
       toast.error("Something went wrong");
@@ -71,11 +76,13 @@ const ProductVariant = ({ product }: Props) => {
                 {property.name.toUpperCase()}:{" "}
               </strong>
               <div className="flex flex-wrap gap-2">
-                {property.value.map((data,index) => (
+                {property.value.map((data, index) => (
                   <Button
                     key={index}
                     type="button"
-                    onClick={(e) => handleVariantSelection(property.name, data,e)}
+                    onClick={(e) =>
+                      handleVariantSelection(property.name, data, e)
+                    }
                     className={cn(
                       "text-white rounded-full px-3 py-1 hover:bg-sky-500/80 transition duration-300 border",
                       params === data
@@ -91,15 +98,14 @@ const ProductVariant = ({ product }: Props) => {
           );
         })}
       </ul>
-      <CartSheet>
-        <Button
-          disabled={!allPropertiesSelected() || isloading}
-          onClick={handleAddToCart}
-          className="bg-red-500 rounded-full w-full text-lg font-bold p-2"
-        >
-          Add To Cart
-        </Button>
-      </CartSheet>
+      <Button
+        disabled={!allPropertiesSelected() || isloading}
+        onClick={handleAddToCart}
+        className="bg-red-500 rounded-full w-full text-lg font-bold p-2"
+      >
+        {isloading && <DotsLoader />}
+        Add To Cart
+      </Button>
     </div>
   );
 };

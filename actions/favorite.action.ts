@@ -3,22 +3,17 @@
 import { currentUser } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { fetchUser } from "./user.action";
-import { create } from "domain";
 
-type props = {
-    currentUserId: string;
-    productId: string;
-}
 export async function filterUserFavorite(currentUserId: string, productId: string) {
     try {
         const user = await currentUser();
-        if (!user) throw new Error('User Not found');
+        if (!user) {
+            console.log('User not found');
+            throw new Error('User not found');
+        }
         const userData = await db.clientUser.findFirst({
             where: {
                 authUserId: currentUserId
-            },
-            include: {
-                favorites: true
             }
         });
         let userInfo: any;
@@ -27,58 +22,61 @@ export async function filterUserFavorite(currentUserId: string, productId: strin
                 data: {
                     authUserId: user.id,
                     name: user.firstName,
-                },
-                include: {
-                    favorites: true
                 }
             })
             userInfo = userCreate
         } else {
             userInfo = userData;
         }
-
-        const favoriteEntry = await db.favoriteProduct.findFirst({
-            where: {
-                userId: userInfo.id,
-                productId: productId,
-            },
-        });
-        return !!favoriteEntry;
+        const isProductFavorite = userInfo.favoriteProductIds.includes(productId);
+        return isProductFavorite
 
     } catch (error: any) {
-        console.log('Something went wrong', error.message)
+        console.log('Error in filter user Favorite', error.message);
     }
-
 }
 
 export async function addProductToFavorite(currentUserId: string, productId: string) {
     try {
-
         const user = await fetchUser();
-        if (!user) throw new Error('user not found');
-        const hasFavorite = await filterUserFavorite(currentUserId, productId);
-        if (!hasFavorite) {
-            await db.favoriteProduct.create({
+        if (!user) {
+            console.log('user not found');
+            throw new Error('User not found');
+        }
+        const existingFavoriteId = await filterUserFavorite(currentUserId, productId)
+
+        if (!existingFavoriteId) {
+            await db.clientUser.update({
+                where: {
+                    id: user?.id
+                },
                 data: {
-                    productId: productId,
-                    userId: user.id
+                    favoriteProductIds: {
+                        push: productId
+                    }
                 }
-            })
+            });
         }
     } catch (error: any) {
-        console.log('error favorite upgrage', error.message)
-    };
-
+        console.log('Error adding to favorites', error.message);
+    }
 }
+
+
 
 export async function removeProductFromFavorite(productId: string) {
     try {
         const user = await fetchUser();
-        if (!user) throw new Error('user not found');
-        await db.favoriteProduct.delete({
+        if (!user) {
+            console.log('user not found')
+            throw new Error('User not found');
+        };
+        await db.clientUser.update({
             where: {
-                productId: productId,
-                userId: user.id
+                id: user.id
+            },
+            data: {
+                favoriteProductIds: user.favoriteProductIds.filter(item => item !== productId)
             }
         });
 

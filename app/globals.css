@@ -6,8 +6,6 @@ body {
   @apply custom-scrollbar bg-[#131313] text-white;
 }
 .themes {
-  /* for navbar and sidebar */
-  /* @apply bg-gray-200 text-black */
   @apply bg-black;
 }
 .themes2 {

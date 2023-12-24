@@ -9,8 +9,6 @@ const Search = () => {
   const searchParam = useSearchParams();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [search, setSearch] = useState("");
-  const searchName = searchParam.get("search");
-  const searchCategory = searchParam.get("category");
   const handleSearch = (e: React.MouseEvent<HTMLFormElement>) => {
     if (search.length > 0) {
       e.preventDefault();

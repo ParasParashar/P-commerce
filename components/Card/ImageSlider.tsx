@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -7,9 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
-  products: FeaturedProducts&{
-    product: Product 
-  }[]
+  products: FeaturedProducts &
+    {
+      product: Product;
+    }[];
 };
 
 const ImageSlider = ({ products }: Props) => {
@@ -38,8 +39,12 @@ const ImageSlider = ({ products }: Props) => {
                   objectFit="contain"
                   className="rounded-lg"
                 />
-                <h2 className="text-lg font-semibold mt-2">{item.product.name}</h2>
-                <p className="text-gray-300">{item.specialDescription.toUpperCase()}</p>
+                <h2 className="text-lg font-semibold mt-2">
+                  {item.product.name}
+                </h2>
+                <p className="text-gray-300">
+                  {item.specialDescription.toUpperCase()}
+                </p>
               </div>
             </Link>
           </div>

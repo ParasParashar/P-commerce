@@ -4,15 +4,16 @@ import Logo from "./Logo";
 import { Button } from "../ui/button";
 import { UserButton } from "@clerk/nextjs";
 import SideBarSheet from "../Models/SideBarSheet";
-import CartSheet from "../Models/CartSheet";
 import Link from "next/link";
 import NavbarRoutes from "./NavbarRoutes";
 import Search from "./Search";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import useCartHook from "../hooks/useCartHook";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
+  const cartSheet = useCartHook();
   const transitionNavbar = () => {
     if (window.scrollY > 120) {
       setShow(true);
@@ -26,14 +27,21 @@ const Navbar = () => {
   }, []);
   return (
     <div className="flex flex-col">
-      <div className={cn("themes flex items-center justify-between px-2 ",show ?"md:fixed z-50 transition-all animate duration-1000 top-0 left-0 md:px-10 right-0 ":"")}>
+      <div
+        className={cn(
+          "themes flex items-center justify-between px-2 ",
+          show
+            ? "md:fixed z-50 transition-all animate duration-1000 top-0 left-0 md:px-10 right-0 "
+            : ""
+        )}
+      >
         <SideBarSheet>
           <Button variant={"outline"} size={"sm"} className="block md:hidden">
             <Menu className="h-5 w-5 text-white" />
           </Button>
         </SideBarSheet>
         <div className="flex items-center gap-2">
-            <Logo />
+          <Logo />
           <NavbarRoutes />
         </div>
         <div className="hidden  md:block w-1/2">
@@ -42,11 +50,9 @@ const Navbar = () => {
         <div className="flex gap-3 items-center">
           <UserButton />
 
-          <CartSheet>
-            <Button variant={"outline"} size={"sm"}>
-              <ShoppingCart className="h-5 w-5 text-white" />
-            </Button>
-          </CartSheet>
+          <Button onClick={cartSheet.onOpen} variant={"outline"} size={"sm"}>
+            <ShoppingCart className="h-5 w-5 text-white" />
+          </Button>
         </div>
       </div>
       <div

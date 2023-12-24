@@ -3,7 +3,7 @@ import { decreaseCartItem, increaseCartItem } from "@/actions/cart.action";
 import { Button } from "../ui/button";
 import { Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import useCartHook from "../hooks/cartHook";
+import useCartHook from "../hooks/useCartHook";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import DotsLoader from "../Providers/DotsLoader";
@@ -29,6 +29,7 @@ const CartProductAction = ({ cartItemId, productId, quantity }: props) => {
     },
     [cartItemId, productId, loader2, cartReload.isOpen, router]
   );
+
   const handleIncrease = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();

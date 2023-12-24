@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Sheet,
-  SheetTrigger,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -15,9 +14,9 @@ import { getUserCart } from "@/actions/products.action";
 import { CartItem, Product } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader } from "lucide-react";
+import { Loader, ShoppingBasket } from "lucide-react";
 import { Button } from "../ui/button";
-import useCartHook from "../hooks/cartHook";
+import useCartHook from "../hooks/useCartHook";
 
 type itemType = CartItem & {
   product: Product & { price: null | number };
@@ -25,7 +24,6 @@ type itemType = CartItem & {
 
 const CartSheet = ({ children }: { children?: React.ReactNode }) => {
   const cartReload = useCartHook();
-  const [isOpen, setIsOpen] = useState(cartReload.isOpen);
   const [isLoading, setIsLoading] = useState(false);
   const [cartItems, setCartItems] = useState<itemType[]>([]);
   const router = useRouter();
@@ -34,11 +32,10 @@ const CartSheet = ({ children }: { children?: React.ReactNode }) => {
     const cart = (await getUserCart()) as itemType[];
     setCartItems(cart);
     setIsLoading(false);
-    (cart);
   };
   useEffect(() => {
     fetchUserCart();
-  }, [isOpen, cartReload.isOpen]);
+  }, [cartReload.isOpen, cartReload.isReload]);
 
   const totalPrice = cartItems?.reduce(
     (total, data) => total + (data.product.price || 0) * data.quantity,
@@ -46,8 +43,7 @@ const CartSheet = ({ children }: { children?: React.ReactNode }) => {
   );
 
   return (
-    <Sheet>
-      <SheetTrigger onClick={() => setIsOpen(!isOpen)}>{children}</SheetTrigger>
+    <Sheet open={cartReload.isOpen} onOpenChange={cartReload.onClose}>
       <SheetContent side={"right"} className="themes max-sm:w-full">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-1 text-xl text-gray-500">
@@ -116,10 +112,11 @@ const CartSheet = ({ children }: { children?: React.ReactNode }) => {
                 ))}
                 {/* <div className="w-full  "> */}
                 {cartItems?.length === 0 ? (
-                  <div className="flex flex-col  gap-2">
+                  <div className="flex h-[80vh] w-full items-center justify-center gap-2">
                     <p className="text-xl  text-center text-gray-400">
                       Your cart is empty
                     </p>
+                    <ShoppingBasket className="h-5 w-5 " />
                   </div>
                 ) : (
                   <div className="border-t-[3px] absolute bottom-0 right-0 left-0 border-[#404040]  z-10  flex flex-col gap-y-3">
