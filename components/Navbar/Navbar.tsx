@@ -74,7 +74,7 @@ const Navbar = () => {
             <Logo />
           </Link>
         )}
-        <div className={cn("w-full ", show ? "" : " ")}>
+        <div className="w-full">
           <Search />
         </div>
       </div>
