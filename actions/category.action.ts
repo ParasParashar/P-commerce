@@ -1,4 +1,7 @@
+'use server'
 import { db } from "@/lib/db"
+import { auth } from "@clerk/nextjs";
+import { Allison } from "next/font/google";
 type searchProps = {
   search: string,
   category: string,
@@ -29,11 +32,11 @@ export async function getSearchProduct({ search, category, propertySearch }: sea
   try {
     if (search) {
       const findProductCategory = await checkCategory(search);
-      if(!findProductCategory) return [];
+      if (!findProductCategory) return [];
       if (findProductCategory.length > 0) {
         const product = await db.product.findMany({
           where: {
-            isPublised:true,
+            isPublised: true,
             category: {
               name: {
                 contains: search,
@@ -47,12 +50,12 @@ export async function getSearchProduct({ search, category, propertySearch }: sea
           }
         })
         return product;
-      } 
+      }
     }
-    if(propertySearch ){
+    if (propertySearch) {
       const product = await db.product.findMany({
         where: {
-          isPublised:true,
+          isPublised: true,
           category: {
             name: {
               contains: category,
@@ -82,11 +85,11 @@ export async function getSearchProduct({ search, category, propertySearch }: sea
       });
       return filteredProducts;
     }
-          
-   
+
+
     const searchProduct = await db.product.findMany({
       where: {
-        isPublised:true,
+        isPublised: true,
         name: {
           contains: search,
           mode: 'insensitive'
@@ -165,9 +168,9 @@ export async function getSearchCategoryProperties(categoryName: string, productN
                 properties: true
               }
             },
-            product:{
-              where:{
-                isPublised:true,
+            product: {
+              where: {
+                isPublised: true,
               }
             }
           },
@@ -187,8 +190,8 @@ export async function getSearchCategoryProperties(categoryName: string, productN
             subcategories: true,
             properties: true,
             product: {
-              where:{
-                isPublised:true
+              where: {
+                isPublised: true
               }
             },
             parent: {
@@ -245,10 +248,10 @@ export async function checkCategory(search: string) {
           mode: 'insensitive'
         },
       },
-      include:{
-        product:{
-          where:{
-            isPublised:true
+      include: {
+        product: {
+          where: {
+            isPublised: true
           }
         }
       }
@@ -257,4 +260,31 @@ export async function checkCategory(search: string) {
   } catch (error) {
     console.log('chekcing erro')
   }
+}
+
+// creating and category and  product array
+
+export async function getAllProductsAndCategory() {
+  try {
+    const products = await db.product.findMany({
+      where: {
+        isPublised: true
+      },
+      select: {
+        name: true
+      }
+    });
+
+    const categories = await db.category.findMany({
+      select: {
+        name: true
+      }
+    });
+    const allItems = [...products, ...categories]
+    return allItems
+
+  } catch (error: any) {
+    console.log(error.message, 'Error in getting all products and category')
+  }
+
 }
