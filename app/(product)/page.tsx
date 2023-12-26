@@ -1,9 +1,10 @@
 import { getAllProducts, getFeaturedProducts } from "@/actions/products.action";
-import ImageSlider from "@/components/Card/ImageSlider";
-import ProductCard from "@/components/Card/ProductCard";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
 import { updateUser } from "@/actions/user.action";
+import dynamic from "next/dynamic";
+import ProductCardSkeleton from "@/components/Skeleton/ProductCardSkeleton";
+import ImageCardSkeleton from "@/components/Skeleton/ImageCardSkeleton";
 
 export default async function Home() {
   const user = await currentUser();
@@ -15,6 +16,16 @@ export default async function Home() {
 
   const products = await getAllProducts();
   const featuredProducts = await getFeaturedProducts();
+
+  const ProductCard = dynamic(() => import("@/components/Card/ProductCard"), {
+    loading: () => <ProductCardSkeleton />,
+    ssr: false,
+  });
+  const ImageSlider = dynamic(() => import("@/components/Card/ImageSlider"), {
+    loading: () => <ImageCardSkeleton />,
+    ssr: false,
+  });
+
   return (
     <main className="p-4 flex flex-col gap-3">
       <section className="p-4 flex flex-col-reverse md:flex-row  gap-3">

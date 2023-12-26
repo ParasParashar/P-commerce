@@ -3,12 +3,15 @@ import HeartButton from "@/components/ActionButton/HeartButton";
 import ShareButton from "@/components/ActionButton/ShareButton";
 import ProductDetails from "@/components/DetailsPage/ProductDetails";
 import ProductDiscription from "@/components/DetailsPage/ProductDiscription";
-import ProductImage from "@/components/DetailsPage/ProductImage";
 import ProductVariant from "@/components/DetailsPage/ProductVaraint";
 import RelatedProducts from "@/components/DetailsPage/RelatedProducts";
 import ReviewBox from "@/components/DetailsPage/ReviewBox";
+import ProductDetailsSkeleton from "@/components/Skeleton/ProductDetailsSkeleton";
+import ProductImageSkeleton from "@/components/Skeleton/ProductImageSkeleton";
+import ProductVariantSkeleton from "@/components/Skeleton/ProductVariantSkeleton";
 import { auth } from "@clerk/nextjs";
 import { Category, Product, ProductReviews } from "@prisma/client";
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 type product = Product & {
   category: Category;
@@ -20,6 +23,29 @@ const page = async ({ params }: { params: { productId: string } }) => {
   if (!product) redirect("/");
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
+
+  const ProductImage = dynamic(
+    () => import("@/components/DetailsPage/ProductImage"),
+    {
+      loading: () => <ProductImageSkeleton />,
+      ssr: false,
+    }
+  );
+  const ProductDetails = dynamic(
+    () => import("@/components/DetailsPage/ProductDetails"),
+    {
+      loading: () => <ProductDetailsSkeleton />,
+      ssr: false,
+    }
+  );
+  const ProductVariant = dynamic(
+    () => import("@/components/DetailsPage/ProductVaraint"),
+    {
+      loading: () => <ProductVariantSkeleton />,
+      ssr: false,
+    }
+  );
+
   return (
     <div className=" pt-3">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">

@@ -19,24 +19,24 @@ export async function POST(req: Request) {
                 cart: true
             }
         });
-        if(!existingUser) {
+        if (!existingUser) {
             return new NextResponse('user not found')
         }
         const updatedUser = await db.clientUser.update({
-            where:{
-                id:existingUser.id,
-                authUserId:userId
+            where: {
+                id: existingUser.id,
+                authUserId: userId
             },
-            data:{
-                cart:{
-                    create:{}
+            data: {
+                cart: {
+                    create: {}
                 }
-            },include:{
-                cart:true
+            }, include: {
+                cart: true
             }
         });
         // finding the cart of the user
-        if(!updatedUser){
+        if (!updatedUser) {
             return new NextResponse('User not found');
         }
         const userCart = await db.cart.findFirst({
@@ -47,6 +47,7 @@ export async function POST(req: Request) {
                 CartItem: true
             }
         });
+
         if (!userCart) return null;
 
         // finding exing product in cartItme in user cart 
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
                     quantity: existingCartItem.quantity + 1,
                     dynamicProperties: dynamicProperties
                 }
-            })
+            });
         } else {
             // if not existing then create item
             await db.cartItem.create({
@@ -73,7 +74,7 @@ export async function POST(req: Request) {
                     quantity: 1,
                     dynamicProperties: dynamicProperties
                 }
-            })
+            });
         }
         return NextResponse.json('Work')
     } catch (error: any) {

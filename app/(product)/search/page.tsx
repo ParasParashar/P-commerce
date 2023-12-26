@@ -3,12 +3,12 @@ import {
   getSearchCategoryProperties,
   getSearchProduct,
 } from "@/actions/category.action";
-import ProductCard from "@/components/Card/ProductCard";
-import CategoryPage from "@/components/Category/CategoryPage";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import CategoryProperties from "@/components/Category/CategoryProperties";
 import { ProductProperties } from "@prisma/client";
+import dynamic from "next/dynamic";
+import ProductCardSkeleton from "@/components/Skeleton/ProductCardSkeleton";
+import CategoryPropertiesSkeletion from "@/components/Skeleton/CategoryPropertiesSkeletion";
 
 type searchType = {
   searchParams: {
@@ -29,17 +29,27 @@ const page = async ({ searchParams }: searchType) => {
   );
 
   const properties: ProductProperties[] = [];
-  productProperties?.forEach((data:any) => {
+  productProperties?.forEach((data: any) => {
     if (data.parent) {
       properties.push(...data.parent.properties);
     }
     properties.push(...data.properties);
   });
+  const ProductCard = dynamic(() => import("@/components/Card/ProductCard"), {
+    loading: () => <ProductCardSkeleton />,
+    ssr: false,
+  });
+  const CategoryProperties = dynamic(
+    () => import("@/components/Category/CategoryProperties"),
+    {
+      loading: () => <CategoryPropertiesSkeletion />,
+      ssr: false,
+    }
+  );
 
-  
   return (
     <div>
-        <CategoryProperties properties={properties}/>
+      <CategoryProperties properties={properties} />
       <div className="p-2 md:4 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {search?.map((product) => (
           <ProductCard

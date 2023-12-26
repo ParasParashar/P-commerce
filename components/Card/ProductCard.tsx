@@ -4,7 +4,6 @@ import Link from "next/link";
 import HeartButton from "../ActionButton/HeartButton";
 import { Product } from "@prisma/client";
 import Image from "next/image";
-import { Skeleton } from "../ui/skeleton";
 type props = {
   product: Product;
   currentUserId: string;
@@ -51,7 +50,3 @@ const ProductCard = ({ product, currentUserId }: props) => {
 };
 
 export default ProductCard;
-
-ProductCard.Skeleton = function TitleSkeleton() {
-  return <Skeleton className="h-72 w-full rounded-lg bg-[#1a1a1a] " />;
-};

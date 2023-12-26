@@ -1,7 +1,8 @@
 import { getCategoryWiseProduct } from "@/actions/category.action";
-import ProductCard from "../Card/ProductCard";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
+import ProductCardSkeleton from "../Skeleton/ProductCardSkeleton";
 
 const CategoryPage = async () => {
   const { userId } = auth();
@@ -16,6 +17,11 @@ const CategoryPage = async () => {
       </div>
     );
   }
+
+  const ProductCard = dynamic(() => import("@/components/Card/ProductCard"), {
+    loading: () => <ProductCardSkeleton />,
+    ssr: false,
+  });
   return (
     <div className="flex flex-col w-full p-4 gap-2">
       {categories.map((category) => (
@@ -23,11 +29,15 @@ const CategoryPage = async () => {
           <p className="text-2xl font-semibold text-gray-300 ">
             {category.name}
           </p>
-            <div className="flex mt-1 gap-x-2 overflow-x-auto md:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {category.product.map((product) => (
-                  <ProductCard key={product.id}  currentUserId={userId} product={product} />
-              ))}
-            </div>
+          <div className="flex mt-1 gap-x-2 overflow-x-auto md:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {category.product.map((product) => (
+              <ProductCard
+                key={product.id}
+                currentUserId={userId}
+                product={product}
+              />
+            ))}
+          </div>
         </div>
       ))}
     </div>
