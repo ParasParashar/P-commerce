@@ -42,6 +42,11 @@ const CartSheet = ({ children }: { children?: React.ReactNode }) => {
     0
   );
 
+  const handleCheckout = () => {
+    router.push("/checkout");
+    cartReload.onClose();
+  };
+
   return (
     <Sheet open={cartReload.isOpen} onOpenChange={cartReload.onClose}>
       <SheetContent side={"right"} className="themes max-sm:w-full">
@@ -126,7 +131,7 @@ const CartSheet = ({ children }: { children?: React.ReactNode }) => {
                     </p>
                     <div className=" border-t-[3px] p-4 border-[#404040]">
                       <Button
-                        onClick={() => router.push("/checkout")}
+                        onClick={handleCheckout}
                         className="w-full bg-blue-500 text-white rounded-full"
                       >
                         Proceed to checkout
